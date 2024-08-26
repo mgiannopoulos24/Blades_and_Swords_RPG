@@ -7,7 +7,6 @@
 #include <unistd.h>
 #include "game.h"
 
-
 int hp = 100;
 int lvl = 1;
 int xp = 0;
@@ -514,13 +513,30 @@ void newGame() {
 		mainMenu();
 }
 
+
+void printLogo(FILE *fptr);
+
 void logo() {
-	printf("\n ___ _         _                       _   ___                   _    ");
-	printf("\n| _ ) |__ _ __| |___ ___  __ _ _ _  __| | / __|_ __ _____ _ _ __| |___");
- 	printf("\n| _ \ / _` / _` / -_|_-< / _` | ' \/ _` | \__ \ V  V / _ \ '_/ _` (_-<)");
- 	printf("\n|___/_\__,_\__,_\___/__/ \__,_|_||_\__,_| |___/\_/\_/\___/_| \__,_/__/\n\n");
+    char *filename = "logo.txt";
+    FILE *fptr = fopen(filename, "r");  // Open the file in read mode
+
+    if (fptr == NULL) {
+        perror("Error opening file");
+        return;
+    }
+
+    printLogo(fptr);
+
+    fclose(fptr);
 }
-                                                                      
+
+void printLogo(FILE *fptr) {
+    char read_string[256];
+
+    while (fgets(read_string, sizeof(read_string), fptr) != NULL) {
+        printf("%s", read_string);
+    }
+}
 
 		
 void mainMenu() {
@@ -598,6 +614,8 @@ void mainMenu() {
 int main() {
 	char newOrSave;
 
+	clearScreen();
+
 	logo();
 	waitForUser();
 
@@ -605,6 +623,7 @@ int main() {
 
 	printf("1. Start New Game\n");
 	printf("2. Load Saved Game\n");
+	printf("3. Exit\n");
 	printf("Enter your choice: ");
 	newOrSave = getchar();
 	getchar();
@@ -615,6 +634,8 @@ int main() {
 		case '2':
 			loadGame();
 			mainMenu();
+			break;
+		case '3':
 			break;
 		default:
 			printf("Invalid choice, try again. Please, check that you actually have a saved games. If not - instead start a new game\n");
